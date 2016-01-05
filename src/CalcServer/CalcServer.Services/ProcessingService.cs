@@ -15,7 +15,17 @@ namespace CalcServer.Services
     /// </summary>
     public class ProcessingService : IProcessingService
     {
-        private readonly static ProcessingServiceBackend Backend = new ProcessingServiceBackend();
+        private readonly IProcessingServiceBackend m_Backend;
+
+        /// <summary>
+        /// Crea una nuova istanza del servizio.
+        /// </summary>
+        /// <param name="container"></param>
+        public ProcessingService(IProcessingServiceBackend container)
+        {
+            m_Backend = container;
+            Console.WriteLine("ProcessingService..ctor");
+        }
 
         /// <summary>
         /// Verifica se la risorsa identificata dal nome e dalla versione specificati esiste ed è abilitato per
@@ -27,9 +37,9 @@ namespace CalcServer.Services
         /// <param name="enabled">l'esito della verifica effettuata</param>
         public void QueryForResource(string name, string version, out bool enabled)
         {
-            enabled = Backend.IsResourceEnabled(name, version);
+            enabled = m_Backend.IsResourceEnabled(name, version);
 
-            Backend.WriteToLog("QueryForResource: name = {0}, version = {1}, enabled = {2}.", name, version, enabled);
+            m_Backend.WriteToLog("QueryForResource: name = {0}, version = {1}, enabled = {2}.", name, version, enabled);
         }
 
         /// <summary>
@@ -39,9 +49,9 @@ namespace CalcServer.Services
         /// <param name="resources">l'elenco delle risorse disponibili e abilitate sul servizio</param>
         public void QueryForEnabledResources(out List<String> resources)
         {
-            resources = Backend.GetEnabledResources();
+            resources = m_Backend.GetEnabledResources();
 
-            Backend.WriteToLog("QueryForEnabledResources: {0}.", string.Join(", ", resources));
+            m_Backend.WriteToLog("QueryForEnabledResources: {0}.", string.Join(", ", resources));
         }
 
         /// <summary>
@@ -53,49 +63,49 @@ namespace CalcServer.Services
         /// <param name="id">l'identificativo associato alla richiesta di elaborazione</param>
         public void SubmitData(TaskData data, out string id)
         {
-            Backend.WriteToLog("SubmitData: receiving data, name = {0}.", data.Name);
+            m_Backend.WriteToLog("SubmitData: receiving data, name = {0}.", data.Name);
             
             ServiceFault fault = null;
 
             // Genera un ID univoco da associare alla richiesta.
             string taskRequestId;
-            if (!Backend.TryGetRandomId(out taskRequestId, out fault))
+            if (!m_Backend.TryGetRandomId(out taskRequestId, out fault))
             {
                 throw new FaultException<ServiceFault>(fault);
             }
 
-            Backend.WriteToLog("SubmitData: task request id = {0}.", taskRequestId);
+            m_Backend.WriteToLog("SubmitData: task request id = {0}.", taskRequestId);
 
-            string tdFilePath = Backend.GetTaskDataFilePath();   // task data file path
+            string tdFilePath = m_Backend.GetTaskDataFilePath();   // task data file path
 
             // Salva i dati ricevuti sul task da elaborare.
-            if (!Backend.TrySaveDataToFile(data.Contents, tdFilePath, out fault))
+            if (!m_Backend.TrySaveDataToFile(data.Contents, tdFilePath, out fault))
             {
                 throw new FaultException<ServiceFault>(fault);
             }
 
-            Backend.WriteToLog("SubmitData: task request id = {0}, file saved to {1}.", taskRequestId, tdFilePath);
+            m_Backend.WriteToLog("SubmitData: task request id = {0}, file saved to {1}.", taskRequestId, tdFilePath);
 
             // Verifica che la risorsa sia disponibile.
             string className, classVersion;
-            if (!Backend.TrySearchResource(tdFilePath, out className, out classVersion, out fault))
+            if (!m_Backend.TrySearchResource(tdFilePath, out className, out classVersion, out fault))
             {
                 throw new FaultException<ServiceFault>(fault);
             }
 
-            string trFilePath = Backend.GetTaskResultsFilePath(); // task results file path
+            string trFilePath = m_Backend.GetTaskResultsFilePath(); // task results file path
 
             // Prepara il task da elaborare.
             TaskMetadata tm = new TaskMetadata(className, classVersion, tdFilePath, trFilePath);
             tm.UpdateOnReady(DateTime.Now);
 
             // Inserisce il task in coda allo scheduler.
-            if (!Backend.TryQueueTask(tm, taskRequestId, out fault))
+            if (!m_Backend.TryQueueTask(tm, taskRequestId, out fault))
             {
                 throw new FaultException<ServiceFault>(fault);
             }
 
-            Backend.WriteToLog("SubmitData: task scheduled with request id = {0}, target file = {1}.",
+            m_Backend.WriteToLog("SubmitData: task scheduled with request id = {0}, target file = {1}.",
                 taskRequestId, trFilePath);
 
             id = taskRequestId;
@@ -109,9 +119,9 @@ namespace CalcServer.Services
         /// <param name="state">lo stato corrente dell'elaborazione del task</param>
         public void GetState(string id, out TaskState state)
         {
-            state = Backend.GetTaskState(id);
+            state = m_Backend.GetTaskState(id);
             
-            Backend.WriteToLog("GetState: task request id = {0}, state = {1}.", id, state);
+            m_Backend.WriteToLog("GetState: task request id = {0}, state = {1}.", id, state);
         }
 
         /// <summary>
@@ -122,32 +132,32 @@ namespace CalcServer.Services
         /// <param name="results">i risultati relativi al task di cui è stata completata l'elaborazione</param>
         public void GetResults(string id, out TaskResults results)
         {
-            Backend.WriteToLog("GetResults: task request id = {0}.", id);
+            m_Backend.WriteToLog("GetResults: task request id = {0}.", id);
 
             ServiceFault fault = null;
 
             // Ottiene la copia dei metadati relativi al task.
             TaskMetadata tm;
-            if (!Backend.TryGetUserTask(id, out tm, out fault))
+            if (!m_Backend.TryGetUserTask(id, out tm, out fault))
             {
                 throw new FaultException<ServiceFault>(fault);
             }
 
-            Backend.WriteToLog("GetResults: sending results from file {0}.", tm.PathToTargetFile);
+            m_Backend.WriteToLog("GetResults: sending results from file {0}.", tm.PathToTargetFile);
 
             // Prepara e invia il risultato.
             try
             {
                 results = new TaskResults()
                 {
-                    ElapsedTime = Backend.GetProcessingTime(tm),
+                    ElapsedTime = m_Backend.GetProcessingTime(tm),
                     EncounteredErrors = tm.Errors,
                     Contents = File.ReadAllText(tm.PathToTargetFile)
                 };
             }
             catch (Exception e)
             {
-                Backend.HandleError(e.ToString(), ServiceFaultCode.SendTaskResultsFailed, out fault);
+                m_Backend.HandleError(e.ToString(), ServiceFaultCode.SendTaskResultsFailed, out fault);
                 throw new FaultException<ServiceFault>(fault);
             }
         }
