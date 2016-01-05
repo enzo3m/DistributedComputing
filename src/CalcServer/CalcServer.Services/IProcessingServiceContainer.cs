@@ -11,7 +11,7 @@ namespace CalcServer.Services
     /// <summary>
     /// Questa interfaccia servirà per la "constructor injection" nel costruttore della classe ProcessingService.
     /// </summary>
-    public interface IProcessingServiceBackend
+    public interface IProcessingServiceContainer
     {
         bool IsResourceEnabled(string name, string version);
 

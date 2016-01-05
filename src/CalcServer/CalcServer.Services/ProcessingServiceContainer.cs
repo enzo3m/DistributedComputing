@@ -17,7 +17,7 @@ namespace CalcServer.Services
     /// <summary>
     /// Implementa il backend del servizio di elaborazione con i metodi necessari al funzionamento dello stesso.
     /// </summary>
-    public class ProcessingServiceBackend : IProcessingServiceBackend
+    public class ProcessingServiceContainer : IProcessingServiceContainer
     {
         #region Fields
 

@@ -21,7 +21,7 @@ namespace CalcServer.Services
         /// <param name="container">Oggetto contenente i dati richiesti dal costruttore del servizio.</param>
         /// <param name="baseAddresses">Indirizzi di base del servizio ospitato.</param>
         /// <exception cref="ArgumentNullException">container è null.</exception>
-        public ProcessingServiceHost(IProcessingServiceBackend container, params Uri[] baseAddresses)
+        public ProcessingServiceHost(IProcessingServiceContainer container, params Uri[] baseAddresses)
             : base(typeof(ProcessingService), baseAddresses)
         {
             if (container == null)

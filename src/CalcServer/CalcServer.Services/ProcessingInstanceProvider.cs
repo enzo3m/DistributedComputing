@@ -16,7 +16,7 @@ namespace CalcServer.Services
     {
         #region Fields
 
-        private readonly IProcessingServiceBackend m_Container;
+        private readonly IProcessingServiceContainer m_Container;
 
         #endregion
 
@@ -27,7 +27,7 @@ namespace CalcServer.Services
         /// </summary>
         /// <param name="container">Oggetto richiesto dal costruttore del servizio.</param>
         /// <exception cref="ArgumentNullException">Il parametro container è null.</exception>
-        public ProcessingInstanceProvider(IProcessingServiceBackend container)
+        public ProcessingInstanceProvider(IProcessingServiceContainer container)
         {
             if (container == null)
             {

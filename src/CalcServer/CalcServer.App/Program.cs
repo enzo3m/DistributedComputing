@@ -35,12 +35,12 @@ namespace CalcServer.App
                 TaskProcessingManager manager = TaskProcessingManager.Instance;
                 manager.SetContextProvider(provider);
 
-                IProcessingServiceBackend backend = new ProcessingServiceBackend();
+                IProcessingServiceContainer container = new ProcessingServiceContainer();
 
                 ServiceHost host = null;
                 try
                 {
-                    host = new ProcessingServiceHost(backend);
+                    host = new ProcessingServiceHost(container);
                     host.Open();
 
                     Console.WriteLine("The service ProcessingService is ready.");

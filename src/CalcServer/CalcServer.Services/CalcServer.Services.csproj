@@ -44,9 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IProcessingServiceBackend.cs" />
+    <Compile Include="IProcessingServiceContainer.cs" />
     <Compile Include="ProcessingInstanceProvider.cs" />
-    <Compile Include="ProcessingServiceBackend.cs" />
+    <Compile Include="ProcessingServiceContainer.cs" />
     <Compile Include="ProcessingService.cs" />
     <Compile Include="ProcessingServiceHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
