@@ -12,28 +12,10 @@ using CalcServer.Contracts;
 namespace CalcServer.TaskProcessing
 {
     /// <summary>
-    /// Assicura un accesso centralizzato alle funzionalità di accodamento e di elaborazione dei task,
-    /// fornendo un'istanza thread-safe di TaskProcessingManager unica nell'applicazione, ottenuta con
-    /// l'impiego del pattern singleton in versione thread-safe.
+    /// Fornisce funzionalità di accodamento e di elaborazione dei task, tramite metodi thread-safe.
     /// </summary>
     public class TaskProcessingManager
     {
-        #region Singleton
-
-        private static readonly TaskProcessingManager m_Instance = new TaskProcessingManager();
-
-        /// <summary>
-        /// Ottiene l'istanza thread-safe di TaskProcessingManager unica nell'applicazione.
-        /// </summary>
-        public static TaskProcessingManager Instance { get { return m_Instance; } }
-
-        /// <summary>
-        /// Il costruttore privato evita che possano essere create ulteriori istanze.
-        /// </summary>
-        private TaskProcessingManager() { ; }
-
-        #endregion
-
         #region Fields
 
         private readonly object m_ContextProviderLocker = new object();
