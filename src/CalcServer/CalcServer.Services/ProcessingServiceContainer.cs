@@ -23,12 +23,25 @@ namespace CalcServer.Services
 
         private readonly Settings m_AppConfig = Settings.Instance;
         private readonly Logger m_AppLogger = Logger.Instance;
-        private readonly TaskProcessingManager m_TaskScheduler = TaskProcessingManager.Instance;
+        private readonly TaskProcessingManager m_TaskScheduler = null;
 
         // La tabella sottostante associa l'id della richiesta con l'id di elaborazione
         // e deve essere condivisa tra tutte le istanze attive del servizio.
         private readonly object m_IdTableLocker = new object();
         private readonly Dictionary<string, string> m_IdTable = new Dictionary<string, string>();
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="scheduler"></param>
+        public ProcessingServiceContainer(TaskProcessingManager scheduler)
+        {
+            m_TaskScheduler = scheduler;
+        }
 
         #endregion
 

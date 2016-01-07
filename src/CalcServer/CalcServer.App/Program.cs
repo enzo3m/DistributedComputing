@@ -32,10 +32,10 @@ namespace CalcServer.App
                 provider.Add(statisticsToolbox);
                 provider.Add(mathToolbox);
 
-                TaskProcessingManager manager = TaskProcessingManager.Instance;
-                manager.SetContextProvider(provider);
+                TaskProcessingManager scheduler = TaskProcessingManager.Instance;
+                scheduler.SetContextProvider(provider);
 
-                IProcessingServiceContainer container = new ProcessingServiceContainer();
+                IProcessingServiceContainer container = new ProcessingServiceContainer(scheduler);
 
                 ServiceHost host = null;
                 try
