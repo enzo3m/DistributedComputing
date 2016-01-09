@@ -32,6 +32,19 @@ namespace CalcServer.TaskProcessing
         /// l'elaborazione e specificato dal nome completo e dalla versione della classe, altrimenti false
         /// </returns>
         bool TryGetContext(string className, string classVersion, out TaskPerformerContext context);
+
+        /// <summary>
+        /// L'implementazione di questo metodo deve controllare se esiste ed è abilitato il contesto di elaborazione
+        /// associato alla classe specificata, restituendo true se tale classe esiste e pertanto è possibile eseguire
+        /// il task, altrimenti false se non esiste e quindi non è possibile eseguire task.
+        /// </summary>
+        /// <param name="className">nome completo della classe di cui si vuole verificare il contesto di elaborazione</param>
+        /// <param name="classVersion">versione della classe di cui si vuole verificare il contesto di elaborazione</param>
+        /// <returns>
+        /// true, se l'oggetto che implementa l'interfaccia ITaskPerformerContextProvider contiene il contesto cercato
+        /// per l'elaborazione e specificato dal nome completo e dalla versione della classe, altrimenti false
+        /// </returns>
+        bool IsContextEnabled(string className, string classVersion);
     }
 
     #endregion
@@ -152,6 +165,27 @@ namespace CalcServer.TaskProcessing
             }
 
             context = m_NoneTaskPerformerContext;
+            return false;
+        }
+
+        /// <summary>
+        /// Verifica se esiste ed è abilitato il contesto di elaborazione relativo alla classe specificata.
+        /// </summary>
+        /// <param name="className">nome completo della classe da verificare</param>
+        /// <param name="classVersion">versione della classe da verificare</param>
+        /// <returns>true, se esiste il contesto cercato per l'elaborazione, altrimenti false</returns>
+        public bool IsContextEnabled(string className, string classVersion)
+        {
+            if (className != null && classVersion != null)
+            {
+                string classId = GetClassIdentifier(className, classVersion);
+
+                if (classId.Length > 0 && m_TaskPerformers.ContainsKey(classId))
+                {
+                    return true;
+                }
+            }
+
             return false;
         }
 
