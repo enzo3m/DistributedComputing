@@ -61,8 +61,7 @@ namespace CalcServer.Services
                 return false;
             }
 
-            string resource = string.Format("{0}-{1}", name, version);
-            return m_AppConfig.IsResourceEnabled(resource);
+            return m_TaskScheduler.IsResourceEnabled(name, version);
         }
 
         /// <summary>
