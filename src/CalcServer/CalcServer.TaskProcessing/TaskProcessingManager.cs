@@ -59,6 +59,25 @@ namespace CalcServer.TaskProcessing
         }
 
         /// <summary>
+        /// Verifica se la risorsa di elaborazione specificata è abilitata su questo oggetto ed in caso positivo
+        /// restituisce true, altrimenti restituisce false.
+        /// </summary>
+        /// <param name="name">il nome completo della classe che implementa la risorsa di elaborazione</param>
+        /// <param name="version">la versione della classe che implementa la risorsa di elaborazione</param>
+        /// <returns>true se la risorsa di elaborazione specificata è abilitata, altrimenti false</returns>
+        public bool IsResourceEnabled(string className, string classVersion)
+        {
+            bool enabled;
+
+            lock (m_ContextProviderLocker)
+            {
+                enabled = m_ContextProvider.IsContextEnabled(className, classVersion);
+            }
+
+            return enabled;
+        }
+
+        /// <summary>
         /// Schedula il task specificato per l'esecuzione e imposta in output l'identificativo assegnato,
         /// restituendo true se l'oggetto contenente i metadati specificati è diverso da null. Altrimenti,
         /// cioè se l'oggetto specificato è null, l'identificativo viene impostato a null e questo metodo
