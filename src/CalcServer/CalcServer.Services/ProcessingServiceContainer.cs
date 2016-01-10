@@ -61,7 +61,7 @@ namespace CalcServer.Services
                 return false;
             }
 
-            return m_TaskScheduler.IsResourceEnabled(name, version);
+            return m_TaskScheduler.IsContextEnabled(name, version);
         }
 
         /// <summary>

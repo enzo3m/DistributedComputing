@@ -65,7 +65,7 @@ namespace CalcServer.TaskProcessing
         /// <param name="name">il nome completo della classe che implementa la risorsa di elaborazione</param>
         /// <param name="version">la versione della classe che implementa la risorsa di elaborazione</param>
         /// <returns>true se la risorsa di elaborazione specificata è abilitata, altrimenti false</returns>
-        public bool IsResourceEnabled(string className, string classVersion)
+        public bool IsContextEnabled(string className, string classVersion)
         {
             bool enabled;
 

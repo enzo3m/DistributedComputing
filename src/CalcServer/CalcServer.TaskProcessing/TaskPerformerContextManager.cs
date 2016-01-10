@@ -90,7 +90,25 @@ namespace CalcServer.TaskProcessing
 
             if (isValidClass)
             {
-                String classId = GetClassIdentifier(className, classVersion);
+                string classId = GetClassIdentifier(className, classVersion);
+                return m_TaskPerformers.Remove(classId);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Rimuove da questo provider l'istanza di ITaskPerformer caratterizzata da nome e versione
+        /// specificati e separati da un carattere "trattino-meno", restituendo true se l'operazione
+        /// viene completata correttamente, o false se l'identificatore della classe specificato non
+        /// identifica un'istanza di questo provider, oppure se sono vuoti o null.
+        /// </summary>
+        /// <param name="classId">nome completo e versione della classe da rimuovere</param>
+        /// <returns>true, se l'istanza è stata rimossa dal provider</returns>
+        public bool Remove(string classId)
+        {
+            if (!string.IsNullOrEmpty(classId))
+            {
                 return m_TaskPerformers.Remove(classId);
             }
 
