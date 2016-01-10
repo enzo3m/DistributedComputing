@@ -22,15 +22,26 @@ namespace CalcServer.App
         static void Main(string[] args)
         {
             Logger appLogger = Logger.Instance;
+            Settings appConfig = Settings.Instance;
 
+            // ==========
+            // TODO: replace with a plugin architecture
+            // ==========
+            Dictionary<String, ITaskPerformer> toolboxes = new Dictionary<String, ITaskPerformer>();
+            toolboxes.Add("CalcServer.Toolboxes.MathToolbox-1.0.0.0", new MathToolbox());
+            toolboxes.Add("CalcServer.Toolboxes.StatisticsToolbox-1.0.0.0", new StatisticsToolbox());
+            // ==========
+            
             if (ReadResourcesList() && ConfigureLogger() && CreateWorkingFolders())
             {
-                StatisticsToolbox statisticsToolbox = new StatisticsToolbox();
-                MathToolbox mathToolbox = new MathToolbox();
-
                 TaskPerformerContextManager provider = new TaskPerformerContextManager();
-                provider.Add(statisticsToolbox);
-                provider.Add(mathToolbox);
+                foreach (string resourceId in appConfig.Resources)
+                {
+                    if (provider.Add(toolboxes[resourceId]))
+                    {
+                        Console.WriteLine("{0} has been successfully loaded!", resourceId);
+                    }
+                }
 
                 TaskProcessingManager scheduler = new TaskProcessingManager();
                 scheduler.SetContextProvider(provider);
@@ -95,9 +106,9 @@ namespace CalcServer.App
                     string resource = line.Trim();
                     if (!string.IsNullOrWhiteSpace(resource))
                     {
-                        if (appConfig.InsertResource(resource))
+                        if (!appConfig.InsertResource(resource))
                         {
-                            Console.WriteLine(resource);
+                            Console.WriteLine("{0} has been already specified in configuration.", resource);
                         }
                     }
                 }
