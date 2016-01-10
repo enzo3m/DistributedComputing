@@ -65,16 +65,24 @@ namespace CalcServer.TaskProcessing
         /// <param name="name">il nome completo della classe che implementa la risorsa di elaborazione</param>
         /// <param name="version">la versione della classe che implementa la risorsa di elaborazione</param>
         /// <returns>true se la risorsa di elaborazione specificata è abilitata, altrimenti false</returns>
-        public bool IsContextEnabled(string className, string classVersion)
+        public bool IsProcessingResourceEnabled(string className, string classVersion)
         {
-            bool enabled;
-
             lock (m_ContextProviderLocker)
             {
-                enabled = m_ContextProvider.IsContextEnabled(className, classVersion);
+                return m_ContextProvider.IsContextEnabled(className, classVersion);
             }
+        }
 
-            return enabled;
+        /// <summary>
+        /// Restituisce gli identificatori delle risorse di elaborazione disponibili.
+        /// </summary>
+        /// <returns>gli identificatori delle risorse di elaborazione disponibili</returns>
+        public ICollection<String> GetEnabledProcessingResources()
+        {
+            lock (m_ContextProviderLocker)
+            {
+                return m_ContextProvider.GetContextIdentifiers();
+            }
         }
 
         /// <summary>
