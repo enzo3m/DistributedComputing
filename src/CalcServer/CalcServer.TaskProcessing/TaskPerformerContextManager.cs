@@ -98,24 +98,6 @@ namespace CalcServer.TaskProcessing
         }
 
         /// <summary>
-        /// Rimuove da questo provider l'istanza di ITaskPerformer caratterizzata da nome e versione
-        /// specificati e separati da un carattere "trattino-meno", restituendo true se l'operazione
-        /// viene completata correttamente, o false se l'identificatore della classe specificato non
-        /// identifica un'istanza di questo provider, oppure se sono vuoti o null.
-        /// </summary>
-        /// <param name="classId">nome completo e versione della classe da rimuovere</param>
-        /// <returns>true, se l'istanza è stata rimossa dal provider</returns>
-        public bool Remove(string classId)
-        {
-            if (!string.IsNullOrEmpty(classId))
-            {
-                return m_TaskPerformers.Remove(classId);
-            }
-
-            return false;
-        }
-
-        /// <summary>
         /// Prova ad ottenere il contesto di elaborazione relativo alla classe specificata. Restituisce true
         /// se tale classe esiste e quindi è possibile eseguire il task, oppure false se non esiste e quindi
         /// non è possibile eseguire task.
@@ -145,12 +127,12 @@ namespace CalcServer.TaskProcessing
         }
 
         /// <summary>
-        /// Verifica se esiste ed è abilitato il contesto di elaborazione relativo alla classe specificata.
+        /// Verifica se esiste ed è abilitata la risorsa di elaborazione relativa alla classe specificata.
         /// </summary>
         /// <param name="className">nome completo della classe da verificare</param>
         /// <param name="classVersion">versione della classe da verificare</param>
-        /// <returns>true, se esiste il contesto cercato per l'elaborazione, altrimenti false</returns>
-        public bool IsContextEnabled(string className, string classVersion)
+        /// <returns>true, se esiste la risorsa di elaborazione cercata, altrimenti false</returns>
+        public bool IsResourceEnabled(string className, string classVersion)
         {
             if (className != null && classVersion != null)
             {
@@ -166,12 +148,12 @@ namespace CalcServer.TaskProcessing
         }
 
         /// <summary>
-        /// Restituisce gli identificatori dei contesti di elaborazione disponibili.
+        /// Restituisce gli identificatori delle risorse di elaborazione disponibili.
         /// </summary>
-        /// <returns>gli identificatori dei contesti di elaborazione disponibili</returns>
-        public ICollection<String> GetContextIdentifiers()
+        /// <returns>gli identificatori delle risorse di elaborazione disponibili</returns>
+        public ICollection<string> GetEnabledResources()
         {
-            return m_TaskPerformers.Keys;
+            return m_TaskPerformers.Keys.ToList<string>();
         }
 
         #endregion

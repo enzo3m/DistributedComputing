@@ -30,23 +30,24 @@ namespace CalcServer.TaskProcessing
         bool TryGetContext(string className, string classVersion, out TaskPerformerContext context);
 
         /// <summary>
-        /// L'implementazione di questo metodo deve controllare se esiste ed è abilitato il contesto di elaborazione
-        /// associato alla classe specificata, restituendo true se tale classe esiste e pertanto è possibile eseguire
-        /// il task, altrimenti false se non esiste e quindi non è possibile eseguire task.
+        /// Questo metodo dovrebbe controllare se esiste ed è abilitata la risorsa di elaborazione
+        /// implementata nella classe specificata, restituendo true se tale classe esiste e quindi
+        /// è possibile eseguire il task, altrimenti false se non esiste.
         /// </summary>
-        /// <param name="className">nome completo della classe di cui si vuole verificare il contesto di elaborazione</param>
-        /// <param name="classVersion">versione della classe di cui si vuole verificare il contesto di elaborazione</param>
+        /// <param name="className">nome completo della classe da verificare</param>
+        /// <param name="classVersion">versione della classe da verificare</param>
         /// <returns>
-        /// true, se l'oggetto che implementa l'interfaccia ITaskPerformerContextProvider contiene il contesto cercato
-        /// per l'elaborazione e specificato dal nome completo e dalla versione della classe, altrimenti false
+        /// true, se l'oggetto che implementa l'interfaccia ITaskPerformerContextProvider contiene
+        /// il contesto cercato per l'elaborazione e specificato dal nome completo e dalla versione
+        /// della classe, altrimenti false
         /// </returns>
-        bool IsContextEnabled(string className, string classVersion);
+        bool IsResourceEnabled(string className, string classVersion);
 
         /// <summary>
         /// L'implementazione di questo metodo deve restituire l'insieme di tutti gli identificatori
-        /// relativi ai contesti di elaborazione disponibili.
+        /// relativi alle risorse di elaborazione disponibili.
         /// </summary>
-        /// <returns>gli identificatori dei contesti di elaborazione disponibili</returns>
-        ICollection<string> GetContextIdentifiers();
+        /// <returns>gli identificatori delle risorse di elaborazione disponibili</returns>
+        ICollection<string> GetEnabledResources();
     }
 }

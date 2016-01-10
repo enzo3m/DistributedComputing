@@ -69,7 +69,7 @@ namespace CalcServer.TaskProcessing
         {
             lock (m_ContextProviderLocker)
             {
-                return m_ContextProvider.IsContextEnabled(className, classVersion);
+                return m_ContextProvider.IsResourceEnabled(className, classVersion);
             }
         }
 
@@ -81,7 +81,7 @@ namespace CalcServer.TaskProcessing
         {
             lock (m_ContextProviderLocker)
             {
-                return m_ContextProvider.GetContextIdentifiers();
+                return m_ContextProvider.GetEnabledResources();
             }
         }
 
