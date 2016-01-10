@@ -24,22 +24,26 @@ namespace CalcServer.App
             Logger appLogger = Logger.Instance;
             Settings appConfig = Settings.Instance;
 
-            // ==========
-            // TODO: replace with a plugin architecture
-            // ==========
-            Dictionary<String, ITaskPerformer> toolboxes = new Dictionary<String, ITaskPerformer>();
-            toolboxes.Add("CalcServer.Toolboxes.MathToolbox-1.0.0.0", new MathToolbox());
-            toolboxes.Add("CalcServer.Toolboxes.StatisticsToolbox-1.0.0.0", new StatisticsToolbox());
-            // ==========
+            // ======================================
+            // TODO: replace with plugin architecture
+            // ======================================
+            List<ITaskPerformer> availableProcessingResources = new List<ITaskPerformer>();
+            availableProcessingResources.Add(new MathToolbox());
+            availableProcessingResources.Add(new StatisticsToolbox());
+            // ======================================
             
             if (ReadResourcesList() && ConfigureLogger() && CreateWorkingFolders())
             {
                 TaskPerformerContextManager provider = new TaskPerformerContextManager();
-                foreach (string resourceId in appConfig.Resources)
+                foreach (var resource in availableProcessingResources)
                 {
-                    if (provider.Add(toolboxes[resourceId]))
+                    string resourceId = string.Format("{0}-{1}", resource.Name, resource.Version);
+                    if (appConfig.Resources.Contains<string>(resourceId))
                     {
-                        Console.WriteLine("{0} has been successfully loaded!", resourceId);
+                        if (provider.Add(resource))
+                        {
+                            Console.WriteLine("{0} has been successfully loaded!", resourceId);
+                        }
                     }
                 }
 
