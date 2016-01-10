@@ -41,5 +41,12 @@ namespace CalcServer.TaskProcessing
         /// per l'elaborazione e specificato dal nome completo e dalla versione della classe, altrimenti false
         /// </returns>
         bool IsContextEnabled(string className, string classVersion);
+
+        /// <summary>
+        /// L'implementazione di questo metodo deve restituire l'insieme di tutti gli identificatori
+        /// relativi ai contesti di elaborazione disponibili.
+        /// </summary>
+        /// <returns>gli identificatori dei contesti di elaborazione disponibili</returns>
+        ICollection<string> GetContextIdentifiers();
     }
 }

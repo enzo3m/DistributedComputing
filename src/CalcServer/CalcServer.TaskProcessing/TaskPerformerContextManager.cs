@@ -165,6 +165,15 @@ namespace CalcServer.TaskProcessing
             return false;
         }
 
+        /// <summary>
+        /// Restituisce gli identificatori dei contesti di elaborazione disponibili.
+        /// </summary>
+        /// <returns>gli identificatori dei contesti di elaborazione disponibili</returns>
+        public ICollection<String> GetContextIdentifiers()
+        {
+            return m_TaskPerformers.Keys;
+        }
+
         #endregion
 
         #region Private Methods
