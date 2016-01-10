@@ -61,7 +61,7 @@ namespace CalcServer.Services
                 return false;
             }
 
-            return m_TaskScheduler.IsContextEnabled(name, version);
+            return m_TaskScheduler.IsProcessingResourceEnabled(name, version);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace CalcServer.Services
         /// <returns>l'elenco delle risorse disponibili e abilitate sul servizio</returns>
         public List<String> GetEnabledResources()
         {
-            return new List<string>(m_AppConfig.Resources);
+            return new List<string>(m_TaskScheduler.GetEnabledProcessingResources());
         }
 
         /// <summary>
