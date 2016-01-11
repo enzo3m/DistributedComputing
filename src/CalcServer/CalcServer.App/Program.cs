@@ -50,7 +50,8 @@ namespace CalcServer.App
                 TaskProcessingManager scheduler = new TaskProcessingManager();
                 scheduler.SetContextProvider(provider);
 
-                IProcessingServiceContainer container = new ProcessingServiceContainer(scheduler);
+                IProcessingServiceContainer container = new ProcessingServiceContainer(
+                    scheduler, appConfig.ReadyTasksFolder, appConfig.CompletedTasksFolder);
 
                 ServiceHost host = null;
                 try

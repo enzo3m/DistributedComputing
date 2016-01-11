@@ -21,9 +21,11 @@ namespace CalcServer.Services
     {
         #region Fields
 
-        private readonly Settings m_AppConfig = Settings.Instance;
         private readonly Logger m_AppLogger = Logger.Instance;
+
         private readonly TaskProcessingManager m_TaskScheduler = null;
+        private readonly string m_ReadyTasksFolder = null;
+        private readonly string m_CompletedTasksFolder = null;
 
         // La tabella sottostante associa l'id della richiesta con l'id di elaborazione
         // e deve essere condivisa tra tutte le istanze attive del servizio.
@@ -38,9 +40,13 @@ namespace CalcServer.Services
         /// 
         /// </summary>
         /// <param name="scheduler"></param>
-        public ProcessingServiceContainer(TaskProcessingManager scheduler)
+        /// <param name="readyTasksFolder"></param>
+        /// <param name="completedTasksFolder"></param>
+        public ProcessingServiceContainer(TaskProcessingManager scheduler, string readyTasksFolder, string completedTasksFolder)
         {
             m_TaskScheduler = scheduler;
+            m_ReadyTasksFolder = readyTasksFolder;
+            m_CompletedTasksFolder = completedTasksFolder;
         }
 
         #endregion
@@ -149,7 +155,7 @@ namespace CalcServer.Services
         /// <returns>un nuovo percorso per il prossimo file in cui salvare i dati di un task da elaborare</returns>
         public string GetTaskDataFilePath()
         {
-            return GenerateRandomFileName(m_AppConfig.ReadyTasksFolder, "xml");
+            return GenerateRandomFileName(m_ReadyTasksFolder, "xml");
         }
 
         /// <summary>
@@ -159,7 +165,7 @@ namespace CalcServer.Services
         /// <returns>un nuovo percorso per il prossimo file in cui salvare i risultati di un task elaborato</returns>
         public string GetTaskResultsFilePath()
         {
-            return GenerateRandomFileName(m_AppConfig.CompletedTasksFolder, "xml");
+            return GenerateRandomFileName(m_CompletedTasksFolder, "xml");
         }
 
         /// <summary>
